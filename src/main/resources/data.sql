@@ -1,2 +1,8 @@
-INSERT INTO train (route, departure_time, available_seats) VALUES ('NYC to Boston', '2023-10-01T10:00:00', 100);
-INSERT INTO train (route, departure_time, available_seats) VALUES ('Boston to NYC', '2023-10-02T14:00:00', 50);
+-- Insert sample trains if they don't exist (avoids duplicates in tests/restarts)
+INSERT INTO train (route, departure_time, available_seats)
+SELECT 'NYC to Boston', TIMESTAMP '2023-10-01 10:00:00', 100
+WHERE NOT EXISTS (SELECT 1 FROM train WHERE route = 'NYC to Boston');
+
+INSERT INTO train (route, departure_time, available_seats)
+SELECT 'Boston to NYC', TIMESTAMP '2023-10-02 14:00:00', 50
+WHERE NOT EXISTS (SELECT 1 FROM train WHERE route = 'Boston to NYC');
