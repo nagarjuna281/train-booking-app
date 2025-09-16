@@ -78,4 +78,27 @@
             </plugin>
         </plugins>
     </build>
+    <build>
+    <!-- ... existing plugins ... -->
+    <plugins>
+        <!-- OWASP Dependency-Check Plugin -->
+        <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>9.2.0</version>  <!-- Latest as of now; check https://jeremylong.github.io/DependencyCheck/ for updates -->
+            <configuration>
+                <failBuildOnCVSS>8</failBuildOnCVSS>  <!-- Fail if high-severity vulns found (adjust threshold) -->
+                <nvdApiKey>your-nvd-api-key</nvdApiKey>  <!-- Optional: Get free key from nvd.nist.gov to avoid rate limits -->
+                <nvdApiDelay>6000</nvdApiDelay>  <!-- Delay in ms to avoid rate-limiting -->
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
 </project>
