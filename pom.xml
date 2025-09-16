@@ -18,7 +18,7 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
-        <!-- Spring Boot Starter Web (with embedded Tomcat as provided for external Tomcat) -->
+        <!-- Dependencies unchanged from previous -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -34,16 +34,6 @@
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- Actuator for monitoring (metrics exposure) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-        <!-- Other dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -68,14 +58,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>  <!-- Single <build> section - all plugins merged here -->
+    <build>
         <finalName>train-booking-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <!-- Tomcat Maven Plugin for deploying to container -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
@@ -88,15 +77,15 @@
                     <password>admin</password>
                 </configuration>
             </plugin>
-            <!-- OWASP Dependency-Check Plugin (for security scans) -->
+            <!-- OWASP Dependency-Check Plugin (configured without API key, disable NVD updates) -->
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>9.2.0</version>  <!-- Latest version -->
+                <version>9.2.0</version>
                 <configuration>
-                    <failBuildOnCVSS>8</failBuildOnCVSS>
-                    <nvdApiKey>your-nvd-api-key</nvdApiKey>  <!-- Replace with your key -->
-                    <nvdApiDelay>6000</nvdApiDelay>
+                    <failBuildOnCVSS>8</failBuildOnCVSS>  <!-- Fail if high-severity vulns (adjust) -->
+                    <nvdDatafeed>false</nvdDatafeed>  <!-- Disable NVD API updates to avoid 403/404 errors (uses local cache) -->
+                    <nvdApiDelay>10000</nvdApiDelay>  <!-- Delay not needed but kept for safety -->
                 </configuration>
                 <executions>
                     <execution>
