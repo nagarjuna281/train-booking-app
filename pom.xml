@@ -18,7 +18,7 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
-        <!-- Dependencies unchanged from previous -->
+        <!-- Dependencies unchanged -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -77,24 +77,33 @@
                     <password>admin</password>
                 </configuration>
             </plugin>
-            <!-- OWASP Dependency-Check Plugin (configured without API key, disable NVD updates) -->
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>9.2.0</version>
-                <configuration>
-                    <failBuildOnCVSS>8</failBuildOnCVSS>  <!-- Fail if high-severity vulns (adjust) -->
-                    <nvdDatafeed>false</nvdDatafeed>  <!-- Disable NVD API updates to avoid 403/404 errors (uses local cache) -->
-                    <nvdApiDelay>10000</nvdApiDelay>  <!-- Delay not needed but kept for safety -->
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
+    <profiles>
+        <!-- Profile for OWASP Dependency-Check (activate with -Powasp) -->
+        <profile>
+            <id>owasp</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>9.2.0</version>
+                        <configuration>
+                            <failBuildOnCVSS>8</failBuildOnCVSS>  <!-- Fail if high-severity vulns (adjust) -->
+                            <nvdDatafeed>false</nvdDatafeed>  <!-- Disable NVD API updates (avoids 403/404, uses local cache) -->
+                            <nvdApiDelay>10000</nvdApiDelay>  <!-- Optional delay -->
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
