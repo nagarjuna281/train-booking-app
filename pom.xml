@@ -18,6 +18,7 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
+        <!-- Spring Boot Starter Web (with embedded Tomcat as provided for external Tomcat) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -33,6 +34,16 @@
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!-- Actuator for monitoring (metrics exposure) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <!-- Other dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -57,13 +68,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
+    <build>  <!-- Single <build> section - all plugins merged here -->
         <finalName>train-booking-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!-- Tomcat Maven Plugin for deploying to container -->
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
@@ -76,29 +88,24 @@
                     <password>admin</password>
                 </configuration>
             </plugin>
+            <!-- OWASP Dependency-Check Plugin (for security scans) -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>9.2.0</version>  <!-- Latest version -->
+                <configuration>
+                    <failBuildOnCVSS>8</failBuildOnCVSS>
+                    <nvdApiKey>your-nvd-api-key</nvdApiKey>  <!-- Replace with your key -->
+                    <nvdApiDelay>6000</nvdApiDelay>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-    <build>
-    <!-- ... existing plugins ... -->
-    <plugins>
-        <!-- OWASP Dependency-Check Plugin -->
-        <plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <version>9.2.0</version>  <!-- Latest as of now; check https://jeremylong.github.io/DependencyCheck/ for updates -->
-            <configuration>
-                <failBuildOnCVSS>8</failBuildOnCVSS>  <!-- Fail if high-severity vulns found (adjust threshold) -->
-                <nvdApiKey>your-nvd-api-key</nvdApiKey>  <!-- Optional: Get free key from nvd.nist.gov to avoid rate limits -->
-                <nvdApiDelay>6000</nvdApiDelay>  <!-- Delay in ms to avoid rate-limiting -->
-            </configuration>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>check</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
 </project>
