@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   app:
-    image: nagarjuna734/train-booking-app:train-booking-app  # Matches Jenkins build and push tag
+    image: nagarjuna734/train-booking-app:train-booking-app
     ports:
-      - "8080:8080"
+      - "8081:8080"  # Changed host port to 8081 to avoid conflict
     depends_on:
       - db
     environment:
