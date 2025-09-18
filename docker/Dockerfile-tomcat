@@ -5,7 +5,7 @@ FROM tomcat:9.0-jdk17
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copy the WAR file from local context to Tomcat's webapps
-COPY train-booking-app.war /usr/local/tomcat/webapps/train-booking-app.war
+COPY target/train-booking-app.war /usr/local/tomcat/webapps/train-booking-app.war
 
 # Expose Tomcat's port
 EXPOSE 8080
