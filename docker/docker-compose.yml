@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   app:
-    image: nagarjuna734/train-booking-app:latest  # Matches Jenkins push tag
+    image: nagarjuna734/train-booking-app:train-booking-app  # Matches Jenkins build and push tag
     ports:
-      - "8080:8080"  # Host port mapped to Tomcat
+      - "8080:8080"
     depends_on:
       - db
     environment:
