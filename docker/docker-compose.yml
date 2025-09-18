@@ -1,39 +1,42 @@
 version: '3.8'
+
 services:
   app:
-    image: train-tomcat-app:latest  # Uses the image built from Dockerfile-tomcat
-    build:
-      context: ..  # Build from parent directory (where target/ is)
-      dockerfile: docker/Dockerfile-tomcat
+    image: nagarjuna734/train-booking-app:latest  # Matches Jenkins push tag
     ports:
-      - "8080:8080"  # Expose app on host port 8080
+      - "8080:8080"  # Host port mapped to Tomcat
     depends_on:
-      - db  # Wait for DB to start
+      - db
     environment:
-      # Override Spring properties for Postgres (persistent DB)
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/traindb
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: pass
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update  # Auto-update schema, persist data
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_SQL_INIT_MODE: never
     networks:
       - app-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   db:
-    image: postgres:14  # Persistent DB (official image, no custom Dockerfile needed)
+    image: postgres:14
     environment:
       POSTGRES_DB: traindb
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     ports:
-      - "5432:5432"  # Optional: Expose DB for external tools (e.g., pgAdmin)
+      - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data  # Persistent volume for DB storage (logins, bookings)
+      - db-data:/var/lib/postgresql/data
     networks:
       - app-net
 
 networks:
-  app-net:  # Internal network for app <-> DB communication
+  app-net:
 
 volumes:
-  db-data:  # Named volume for persistence (data survives 'down')
+  db-data:
